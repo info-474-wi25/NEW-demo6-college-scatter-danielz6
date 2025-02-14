@@ -21,28 +21,59 @@ d3.csv("colleges.csv").then(data => {
     })
 
     // 3: SET AXES SCALES
-    //Your code...
+    let xEarningScale = d3.scaleLinear() // x variable: earnings
+        .domain([0, d3.max(data, d => d.earnings)])
+        .range([0, width]);
+
+    let yDebtScale = d3.scaleLinear() // y variable: debt
+        .domain([0, d3.max(data, d => d.debt)])
+        .range([0, height]);
 
     // 4: PLOT POINTS
-    //Your code...
-
+	svgScatter.attr('class', 'scatter')
+    .selectAll('circle')
+		.data(data)
+		.enter()
+		.append('circle')
+        .attr('cx', function(d) {
+            return xEarningScale(d['earnings']);
+        })
+        .attr('cy', d => yDebtScale(d.debt))
+        .attr('r', 5)
+        ;
     // 5: AXES
     // Add x-axis
-    //Your code...
-    
+    svgScatter.append("g")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(xEarningScale));
+
     // Add y-axis
-    //Your code...
-    
+    svgScatter.append("g")
+        .call(d3.axisLeft(yDebtScale));
+
 
     // 6: ADD LABELS
     // Add title
-    //Your code...
+    svgScatter.append("text")
+        .attr("class", "title")
+        .attr("x", width / 2) // Centered horizontally on the chart
+        .attr("y", -margin.top / 2)
+        .text("Median Earnings 8 Years After Entry vs. Median Debt upon Graduation"); // Change as needed
     
     // Add x-axis label
-    //Your code...
+    svgScatter.append("text")
+        .attr("class", "axis-label")
+        .attr("x", width / 2) // Centered horizontally on the chart
+        .attr("y", height + (margin.bottom / 2))
+        .text("Earnings ($)"); // Change as needed
     
     // Add y-axis label
-    //Your code...
+    svgScatter.append("text")
+        .attr("class", "axis-label")
+        .attr('transform', 'rotate(-90)')
+        .attr("y", (-margin.left / 2) + 10)
+        .attr("x", -height / 2) // Centered horizontally on the chart
+        .text("Median Debt ($)"); // Change as needed
     
 
     // [optional challenge] 7: ADD TOOL-TIP
